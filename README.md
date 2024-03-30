@@ -1,66 +1,127 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Food Delivery App Installation Guide
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This guide provides detailed steps to install and set up the Food Delivery App using local environment. Follow these instructions carefully to ensure a successful installation.
 
-## About Laravel
+**NOTE:** It is highly recommended to follow the installation guide of [food-delivery-docker-compose-boilerplate
+](https://github.com/Imran17507/food-delivery-docker-compose-boilerplate)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Prerequisites
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Before you begin, ensure you have the following installed on your system:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP 8.3.4
+- MySQL 8.3.0
+- Laravel 11.1.1
+- Composer 2.2.23
+- Adminer (Optional)
 
-## Learning Laravel
+## Installation Steps
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. **Clone the Application Repository**
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+   First, clone the application repository to your local machine. Open your terminal and run the following command:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+   ```bash
+   git clone git@github.com:Imran17507/food-delivery-app.git
+   ```
 
-## Laravel Sponsors
+2. **Navigate to the Application Directory**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+   Change into the application directory:
 
-### Premium Partners
+   ```bash
+   cd food-delivery-app
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+3. **Install Dependencies with Composer**
 
-## Contributing
+   Run the following command to install PHP dependencies through Composer:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+   ```bash
+   composer install
+   ```
 
-## Code of Conduct
+4. **Set Up Environment Configuration**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+   Copy the example environment file to create a new .env file:
 
-## Security Vulnerabilities
+   ```bash
+    cp .env.example .env
+    ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+   Ensure the .env file contains the following database configuration:
 
-## License
+   ```php
+    DB_CONNECTION=mysql
+    DB_HOST=mysql
+    DB_PORT=3306
+    DB_DATABASE=food_delivery
+    DB_USERNAME=admin
+    DB_PASSWORD=1234
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+5. **Generate Application Key**
+
+   Generate a new application key:
+
+	```bash
+    php artisan key:generate
+    ```
+
+6. **Run Database Migrations**
+
+   Apply the database migrations:
+
+   ```bash
+    php artisan migrate
+    ```
+
+7. **Seed the Database**
+
+   Populate the database with initial data:
+
+   ```bash
+    php artisan db:seed
+   ```
+
+8. **Run the API Tests**
+
+	Ensure everything is set up correctly by running:
+
+	```bash
+    ./vendor/bin/pest
+    ```
+
+## Testing API Endpoints
+
+After installation, you can test the API endpoints using a tool like Postman or curl.
+
+- Store Rider Location History
+  ```bash
+    POST http://localhost:8000/api/rider/location-history
+  ```
+  Payload:
+
+	```json
+	{
+		"rider_id": "80",
+		"service_name": "UberEats",
+		"latitude": "23.807624",
+		"longitude": "90.368352",
+		"capture_time": "2024-03-30 08:51:55"
+	}
+	```
+
+- Find The Nearest Rider
+	```bash
+	POST http://localhost:8000/api/restaurant/nearest-rider
+	```
+  Payload:
+
+	```json
+	{
+		"restaurant_id": "10"
+	}
+	```
+
+Follow these steps to set up and start using the Food Delivery App Service.
