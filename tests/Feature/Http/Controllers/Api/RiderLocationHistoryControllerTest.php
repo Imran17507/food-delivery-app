@@ -1,10 +1,28 @@
 <?php
 
+use App\Models\Rider;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 
+uses(RefreshDatabase::class);
+
 it('stores rider location history successfully', function () {
+    $rider = Rider::factory()->create([
+        'first_name' => fake()->firstName(),
+        'last_name' => fake()->lastName(),
+        'email_address' => fake()->unique()->email(),
+        'contact_no' => fake()->unique()->phoneNumber(),
+        'present_address' => fake()->address(),
+        'permanent_address' => fake()->address(),
+        'nid_no' => fake()->unique()->numberBetween(1000000000, 9999999999999),
+        'passport_no' => fake()->unique()->numberBetween(1000000000, 9999999999999),
+        'emergency_contact_persons_name' => fake()->unique()->name(),
+        'emergency_contact_persons_contact_no' => fake()->unique()->phoneNumber(),
+        'created_by' => 'System'
+    ]);
+
     $payload = [
-        'rider_id' => 1,
+        'rider_id' => $rider->id,
         'service_name' => 'Test Service',
         'latitude' => '23.806206',
         'longitude' => '90.359483',
