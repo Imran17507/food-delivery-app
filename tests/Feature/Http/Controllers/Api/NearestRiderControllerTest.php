@@ -42,10 +42,37 @@ it('successfully retrieves the nearest rider for a restaurant in mirpur sector 1
 
     $response = $this->json('POST', '/api/restaurant/nearest-rider', ['restaurant_id' => $restaurant->id]);
 
-    $response->assertStatus(200)
+    $response->assertStatus(Response::HTTP_OK)
              ->assertJson([
                  'status' => 'success',
                  'message' => 'Nearest rider found',
              ])
              ->assertJsonPath('data.rider_id', $riderLocationHistory->rider_id);
+});
+
+test('returns a validation error if restaurant_id is not provided', function () {
+    $response = $this->json('POST', '/api/restaurant/nearest-rider', []);
+
+    $response->assertStatus(Response::HTTP_BAD_REQUEST)
+             ->assertJson([
+                 'status' => 'error',
+                 'message' => 'Validation error',
+             ]);
+});
+
+test('handles exceptions', function () {
+    $this->mock(App\Http\Controllers\Api\NearestRiderController::class, function ($mock) {
+        $mock->shouldReceive('nearestRider')->andThrow(new Exception('Database error'));
+    });
+
+    $payload = [
+        'restaurant_id' => 999
+    ];
+
+    $response = $this->json('POST', '/api/restaurant/nearest-rider', $payload);
+
+    $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR)
+             ->assertJson([
+                 'message' => 'Database error',
+             ]);
 });
