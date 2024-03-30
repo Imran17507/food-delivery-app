@@ -68,7 +68,9 @@ Before you begin, ensure you have the following installed on your system:
     php artisan key:generate
     ```
 
-6. **Run Database Migrations**
+6. **Browse the application**
+
+7. **Run Database Migrations**
 
    Apply the database migrations:
 
@@ -76,7 +78,7 @@ Before you begin, ensure you have the following installed on your system:
     php artisan migrate
     ```
 
-7. **Seed the Database**
+8. **Seed the Database**
 
    Populate the database with initial data:
 
@@ -84,7 +86,7 @@ Before you begin, ensure you have the following installed on your system:
     php artisan db:seed
    ```
 
-8. **Run the API Tests**
+9. **Run the API Tests**
 
 	Ensure everything is set up correctly by running:
 
