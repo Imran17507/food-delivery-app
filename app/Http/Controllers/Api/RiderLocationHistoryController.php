@@ -8,27 +8,38 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class RiderLocationHistoryController extends Controller
 {
     public function store(Request $request): JsonResponse
     {
         try {
-            $validatedData = $request->validate([
+            $validator = Validator::make($request->all(), [
                 'rider_id' => 'required|integer',
                 'service_name' => 'required|string|max:32',
-                'latitude' => 'required|decimal:0,6',
-                'longitude' => 'required|decimal:0,6',
+                'latitude' => 'required|numeric',
+                'longitude' => 'required|numeric',
                 'capture_time' => 'required|date'
             ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors(),
+                    'status' => 'error'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            $validatedData = $validator->validated();
 
             $riderLocationHistory = new RiderLocationHistory($validatedData);
             $riderLocationHistory->save();
 
             return response()->json([
-                'message' => 'Rider location stored successfully',
+                'message' => 'Rider location history stored successfully',
                 'data' => $riderLocationHistory,
                 'status' => 'success'
             ], Response::HTTP_CREATED);

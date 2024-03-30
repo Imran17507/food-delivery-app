@@ -24,8 +24,8 @@ class RiderLocationHistoryStoreRequest extends FormRequest
         return [
             'rider_id' => 'required|integer',
             'service_name' => 'nullable|string|max:32',
-            'latitude' => 'required|decimal:0,6',
-            'longitude' => 'required|decimal:0,6',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
             'capture_time' => 'required|date'
         ];
     }
