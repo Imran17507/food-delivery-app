@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
+use App\Models\Rider;
 use App\Models\RiderLocationHistory;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -38,15 +39,15 @@ class NearestRiderController extends Controller
             $restaurantLat = $restaurant->latitude;
             $restaurantLon = $restaurant->longitude;
 
-            $nearestRider = RiderLocationHistory::select(DB::raw("rider_id, latitude, longitude, ( 6371 * acos( cos( radians($restaurantLat) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($restaurantLon) ) + sin( radians($restaurantLat) ) * sin(radians(latitude)) ) ) AS distance"))
+            $nearestRider = RiderLocationHistory::select(DB::raw("rider_id, latitude, longitude, ( 6371 * acos( cos( radians($restaurantLat) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($restaurantLon) ) + sin( radians($restaurantLat) ) * sin(radians(latitude)) ) ) AS distance_from_restaurant_in_km"))
                                 ->where('capture_time', '>=', now()->subSeconds(1))
-                                ->orderBy('distance', 'ASC')
+                                ->orderBy('distance_from_restaurant_in_km', 'ASC')
                                 ->first();
 
             if (is_null($nearestRider)) {
-                $nearestRider = RiderLocationHistory::select(DB::raw("rider_id, latitude, longitude, ( 6371 * acos( cos( radians($restaurantLat) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($restaurantLon) ) + sin( radians($restaurantLat) ) * sin(radians(latitude)) ) ) AS distance"))
+                $nearestRider = RiderLocationHistory::select(DB::raw("rider_id, latitude, longitude, ( 6371 * acos( cos( radians($restaurantLat) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians($restaurantLon) ) + sin( radians($restaurantLat) ) * sin(radians(latitude)) ) ) AS distance_from_restaurant_in_km"))
                                     ->where('capture_time', '>=', now()->subMinutes(5))
-                                    ->orderBy('distance', 'ASC')
+                                    ->orderBy('distance_from_restaurant_in_km', 'ASC')
                                     ->first();
             }
 
@@ -56,6 +57,10 @@ class NearestRiderController extends Controller
                     'status' => 'failed'
                 ], Response::HTTP_NOT_FOUND);
             }
+
+            $rider = Rider::findOrFail($nearestRider->rider_id);
+            $nearestRider->name = $rider->first_name . " " . $rider->last_name;
+            $nearestRider->contact_no = $rider->contact_no;
 
             return response()->json([
                 'message' => 'Nearest rider found',
