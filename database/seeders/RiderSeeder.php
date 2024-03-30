@@ -3,18 +3,16 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Rider;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+class RiderSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * Run the database seeds.
      */
     public function run(): void
     {
-        $this->call([
-            RiderSeeder::class,
-            RestaurantSeeder::class,
-        ]);
+        Rider::factory()->count(100)->create();
     }
 }
