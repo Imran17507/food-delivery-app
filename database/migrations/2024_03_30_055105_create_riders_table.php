@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('last_name', 16)->nullable();
 
             $table->string('email_address', 64)->unique();
-            $table->string('contact_no', 16)->unique();
+            $table->string('contact_no', 32)->unique();
             $table->text('present_address');
             $table->text('permanent_address');
 
