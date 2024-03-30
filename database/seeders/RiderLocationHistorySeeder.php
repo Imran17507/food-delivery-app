@@ -18,10 +18,10 @@ class RiderLocationHistorySeeder extends Seeder
         $restaurants = Restaurant::all();
 
         foreach ($restaurants as $restaurant) {
-            for ($i = 0; $i < 10; $i++) {
+            for ($i = 0; $i < 1000; $i++) {
                 $lat = $restaurant->latitude + (rand(-100, 100) / 10000.0);
                 $long = $restaurant->longitude + (rand(-100, 100) / 10000.0);
-                $captureTime = Carbon::now()->subMinutes(rand(0, 5));
+                $captureTime = Carbon::now()->subSeconds(rand(0, 300));
 
                 RiderLocationHistory::insert([
                     'rider_id' => rand(1, 100),
