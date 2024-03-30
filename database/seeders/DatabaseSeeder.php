@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Restaurant;
 use App\Models\Rider;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -15,5 +16,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Rider::factory()->count(100)->create();
+        Restaurant::factory()->count(50)->create();
     }
 }
