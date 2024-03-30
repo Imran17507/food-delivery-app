@@ -10,4 +10,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/rider/location-history', [RiderLocationHistoryController::class, 'store']);
-Route::get('/restaurant/{restaurant_id}/nearest-rider', [NearestRiderController::class, 'nearestRider']);
+Route::post('/restaurant/nearest-rider', [NearestRiderController::class, 'nearestRider']);
