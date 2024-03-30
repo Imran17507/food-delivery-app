@@ -50,17 +50,18 @@ class NearestRiderController extends Controller
                                     ->first();
             }
 
-            if ($nearestRider) {
-                return response()->json($nearestRider);
-            } else {
-                return response()->json(['message' => 'No nearby rider found'], 404);
+            if (is_null($nearestRider)) {
+                return response()->json([
+                    'message' => 'No nearby rider found',
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
             }
 
             return response()->json([
-                'message' => 'Rider location history stored successfully',
+                'message' => 'Nearest rider found',
                 'data' => $nearestRider,
                 'status' => 'success'
-            ], Response::HTTP_CREATED);
+            ], Response::HTTP_OK);
         } catch (Exception | QueryException $e) {
             Log::error('Exception in NearestRiderController@nearestRider', [
                 'error' => $e->getMessage(),
