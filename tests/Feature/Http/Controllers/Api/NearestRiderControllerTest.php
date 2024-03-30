@@ -4,10 +4,7 @@ use App\Models\Restaurant;
 use App\Models\Rider;
 use App\Models\RiderLocationHistory;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
-
-uses(RefreshDatabase::class);
 
 it('successfully retrieves the nearest rider for a restaurant in mirpur sector 10', function () {
     $mirpur10Latitude = 23.806913;
@@ -27,17 +24,29 @@ it('successfully retrieves the nearest rider for a restaurant in mirpur sector 1
         'created_by' => 'System'
     ]);
 
-    Rider::factory()->count(1)->create();
+    $rider = Rider::factory()->create([
+        'first_name' => fake()->firstName(),
+        'last_name' => fake()->lastName(),
+        'email_address' => fake()->unique()->email(),
+        'contact_no' => fake()->unique()->phoneNumber(),
+        'present_address' => fake()->address(),
+        'permanent_address' => fake()->address(),
+        'nid_no' => fake()->unique()->numberBetween(1000000000, 9999999999999),
+        'passport_no' => fake()->unique()->numberBetween(1000000000, 9999999999999),
+        'emergency_contact_persons_name' => fake()->unique()->name(),
+        'emergency_contact_persons_contact_no' => fake()->unique()->phoneNumber(),
+        'created_by' => 'System'
+    ]);
 
-    $lat = $restaurant->latitude + (rand(-100, 100) / 10000.0);
-    $long = $restaurant->longitude + (rand(-100, 100) / 10000.0);
+    $lat = $restaurant->latitude;
+    $long = $restaurant->longitude;
 
     $riderLocationHistory = RiderLocationHistory::factory()->create([
-        'rider_id' => 1,
+        'rider_id' => $rider->id,
         'service_name' => fake()->randomElement(['Pathao', 'HungryNaki', 'UberEats', 'Foodpanda']),
         'latitude' => $lat,
         'longitude' => $long,
-        'capture_time' => Carbon::now()->subSeconds(rand(0, 300)),
+        'capture_time' => Carbon::now(),
     ]);
 
     $response = $this->json('POST', '/api/restaurant/nearest-rider', ['restaurant_id' => $restaurant->id]);
@@ -50,7 +59,7 @@ it('successfully retrieves the nearest rider for a restaurant in mirpur sector 1
              ->assertJsonPath('data.rider_id', $riderLocationHistory->rider_id);
 });
 
-test('returns a validation error if restaurant_id is not provided', function () {
+it('returns a validation error if restaurant_id is not provided', function () {
     $response = $this->json('POST', '/api/restaurant/nearest-rider', []);
 
     $response->assertStatus(Response::HTTP_BAD_REQUEST)
@@ -60,7 +69,7 @@ test('returns a validation error if restaurant_id is not provided', function () 
              ]);
 });
 
-test('handles exceptions', function () {
+it('handles exceptions', function () {
     $this->mock(App\Http\Controllers\Api\NearestRiderController::class, function ($mock) {
         $mock->shouldReceive('nearestRider')->andThrow(new Exception('Database error'));
     });

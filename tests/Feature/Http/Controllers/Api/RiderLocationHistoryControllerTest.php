@@ -1,10 +1,7 @@
 <?php
 
 use App\Models\Rider;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
-
-uses(RefreshDatabase::class);
 
 it('stores rider location history successfully', function () {
     $rider = Rider::factory()->create([
