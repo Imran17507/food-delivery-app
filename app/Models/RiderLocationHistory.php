@@ -14,6 +14,7 @@ class RiderLocationHistory extends Model
     protected $table = 'rider_location_histories';
     protected $primaryKey = 'id';
     protected $guarded = ['id'];
+    public $timestamps = false;
 
     protected static function newFactory(): Factory
     {
